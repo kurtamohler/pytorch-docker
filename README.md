@@ -16,7 +16,7 @@ together.
 ### Clone this repo
 
 ```bash
-git clone <url>
+git clone git@github.com:kurtamohler/pytorch-docker.git
 cd pytorch-docker
 ```
 
