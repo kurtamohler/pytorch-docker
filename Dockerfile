@@ -19,7 +19,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
         curl \
         git \
         libjpeg-dev \
-        libffi-dev libbz2-dev libreadline-dev libncurses5-dev libncursesw5-dev libgdbm-dev libsqlite3-dev uuid-dev tk-dev liblzma-dev \
         libpng-dev && \
     rm -rf /var/lib/apt/lists/*
 RUN /usr/sbin/update-ccache-symlinks
@@ -44,30 +43,6 @@ RUN chmod +x ~/miniconda.sh && \
     /opt/conda/bin/conda install -y python=${PYTHON_VERSION} cmake conda-build pyyaml numpy ipython libpython-static && \
     /opt/conda/bin/python -mpip install -r requirements.txt && \
     /opt/conda/bin/conda clean -ya
-
-#FROM dev-base as submodule-update
-#WORKDIR /opt/pytorch
-#COPY . .
-#RUN git submodule update --init --recursive
-
-#FROM conda as build
-#WORKDIR /opt/pytorch
-#COPY --from=conda /opt/conda /opt/conda
-#COPY --from=submodule-update /opt/pytorch /opt/pytorch
-#RUN --mount=type=cache,target=/opt/ccache \
-#    TORCH_CUDA_ARCH_LIST="3.5 5.2 6.0 6.1 7.0+PTX 8.0" TORCH_NVCC_FLAGS="-Xfatbin -compress-all" \
-#    CMAKE_PREFIX_PATH="$(dirname $(which conda))/../" \
-#    MAX_JOBS=8 \
-#    USE_CUDA=0 \
-#    python setup.py install
-
-#FROM build as clone-multipy
-#WORKDIR /opt
-#RUN git clone --recurse-submodules https://github.com/pytorch/multipy.git
-#WORKDIR /opt/multipy
-#RUN git checkout ${MULTIPY_COMMIT}
-#RUN python multipy/runtime/example/generate_examples.py
-#RUN pip install -e .
 
 FROM conda as conda-installs
 ARG PYTHON_VERSION=3.8
@@ -109,7 +84,10 @@ ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64
 ENV PYTORCH_VERSION ${PYTORCH_VERSION}
 WORKDIR /workspace
+# Dependencies for multipy
+RUN apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+  libffi-dev libbz2-dev libreadline-dev libncurses5-dev libncursesw5-dev libgdbm-dev libsqlite3-dev uuid-dev tk-dev liblzma-dev && \
+  rm -rf /var/lib/apt/lists/*
 
 FROM official as dev
-# Should override the already installed version from the official-image stage
-#COPY --from=build /opt/conda /opt/conda
