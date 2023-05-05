@@ -77,10 +77,11 @@ python multipy/runtime/example/generate_examples.py
 pip install -e . --install-option="--cudatests"
 ```
 
-You can now run the MultiPy tests against your PyTorch build.
+You can now run the MultiPy tests against your PyTorch build. For it to run
+properly, you have to be in the `/opt/multipy` directory.
 
 ```bash
-/opt/multipy/multipy/runtime/build/test_deploy
+./multipy/runtime/build/test_deploy
 ```
 
 NOTE: If you make any changes to MultiPy or PyTorch, you need to delete the
