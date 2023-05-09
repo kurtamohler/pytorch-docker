@@ -38,6 +38,12 @@ commit that corresponds with your PyTorch branch.
 ./clone-multipy.sh
 ```
 
+### Build the Docker image
+
+```bash
+make -f docker.Makefile
+```
+
 ### Run the Docker image
 
 Find the ID of the new docker image with:
