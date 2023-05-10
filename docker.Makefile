@@ -2,10 +2,13 @@ DOCKER_REGISTRY          ?= docker.io
 DOCKER_ORG               ?= $(shell docker info 2>/dev/null | sed '/Username:/!d;s/.* //')
 DOCKER_IMAGE             ?= pytorch
 DOCKER_FULL_NAME          = $(DOCKER_REGISTRY)/$(DOCKER_ORG)/$(DOCKER_IMAGE)
+USER											= $(shell whoami)
+UID												= $(shell id -u)
+GID												= $(shell id -g)
 
 ifeq ("$(DOCKER_ORG)","")
 $(warning WARNING: No docker user found using results from whoami)
-DOCKER_ORG                = $(shell whoami)
+DOCKER_ORG                = $(USER)
 endif
 
 MULTIPY_COMMIT						= $(shell cat .github/ci_commit_pins/multipy.txt)
@@ -33,7 +36,10 @@ BUILD_ARGS                = --build-arg BASE_IMAGE=$(BASE_IMAGE) \
 							--build-arg CUDA_CHANNEL=$(CUDA_CHANNEL) \
 							--build-arg PYTORCH_VERSION=$(PYTORCH_VERSION) \
 							--build-arg INSTALL_CHANNEL=$(INSTALL_CHANNEL) \
-							--build-arg TRITON_VERSION=$(TRITON_VERSION)
+							--build-arg TRITON_VERSION=$(TRITON_VERSION) \
+							--build-arg USER=$(USER) \
+							--build-arg UID=$(UID) \
+							--build-arg GID=$(GID)
 EXTRA_DOCKER_BUILD_FLAGS ?=
 
 BUILD                    ?= build
