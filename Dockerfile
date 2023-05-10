@@ -76,5 +76,6 @@ RUN apt-get update && \
   rm -rf /var/lib/apt/lists/*
 RUN groupadd -g $GID -o $USER
 RUN useradd -m -u $UID -g $GID -o -s /bin/bash $USER
+RUN chown -R $UID:$GID /opt/conda /opt/nvidia
 
 FROM official as dev
