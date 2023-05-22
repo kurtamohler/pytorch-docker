@@ -90,6 +90,15 @@ properly, you have to be in the `/opt/multipy` directory.
 ./multipy/runtime/build/test_deploy
 ```
 
+NOTE: If you ever rebase your PyTorch checkout or switch to another commit, you may
+have to resynchronize MultiPy with it by checking out the expected commit. Otherwise,
+building MultiPy may fail.
+
+```bash
+git pull
+git checkout $(cat ../pytorch/.github/ci_commit_pins/multipy.txt)
+```
+
 NOTE: If you make any changes to MultiPy or PyTorch, you need to delete the
 runtime build directory in multipy before rebuilding MultiPy, like so:
 
