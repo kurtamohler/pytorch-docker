@@ -44,6 +44,24 @@ RUN chmod +x ~/miniconda.sh && \
     /opt/conda/bin/python -mpip install -r requirements.txt && \
     /opt/conda/bin/conda clean -ya
 
+FROM conda as conda-installs
+ARG PYTHON_VERSION=3.8
+ARG CUDA_VERSION=11.7
+ARG CUDA_CHANNEL=nvidia
+ARG INSTALL_CHANNEL=pytorch-nightly
+# Automatically set by buildx
+RUN /opt/conda/bin/conda update -y conda
+RUN /opt/conda/bin/conda install -c "${INSTALL_CHANNEL}" -y python=${PYTHON_VERSION}
+ARG TARGETPLATFORM
+
+# On arm64 we can only install wheel packages.
+RUN case ${TARGETPLATFORM} in \
+         "linux/arm64")  pip install --extra-index-url https://download.pytorch.org/whl/cpu/ torch torchvision torchaudio torchtext ;; \
+         *)              /opt/conda/bin/conda install -c "${INSTALL_CHANNEL}" -c "${CUDA_CHANNEL}" -y "python=${PYTHON_VERSION}" pytorch torchvision torchaudio torchtext "pytorch-cuda=$(echo $CUDA_VERSION | cut -d'.' -f 1-2)"  ;; \
+    esac && \
+    /opt/conda/bin/conda clean -ya 
+RUN /opt/conda/bin/pip install torchelastic
+
 FROM ${BASE_IMAGE} as official
 ARG PYTORCH_VERSION
 ARG TRITON_VERSION

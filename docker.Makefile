@@ -15,7 +15,6 @@ MULTIPY_COMMIT						= $(shell cat .github/ci_commit_pins/multipy.txt)
 
 CUDA_VERSION              = 11.7.0
 CUDNN_VERSION             = 8
-BASE_RUNTIME              = ubuntu:18.04
 BASE_DEVEL                = nvidia/cuda:$(CUDA_VERSION)-cudnn$(CUDNN_VERSION)-devel-ubuntu18.04
 
 # The conda channel to use to install cudatoolkit
@@ -77,12 +76,6 @@ all: devel-image
 devel-image: BASE_IMAGE := $(BASE_DEVEL)
 devel-image: DOCKER_TAG := $(PYTORCH_VERSION)-devel
 devel-image:
-	$(DOCKER_BUILD)
-
-.PHONY: runtime-image
-runtime-image: BASE_IMAGE := $(BASE_RUNTIME)
-runtime-image: DOCKER_TAG := $(PYTORCH_VERSION)-runtime
-runtime-image:
 	$(DOCKER_BUILD)
 
 .PHONY: clean
