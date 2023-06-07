@@ -46,6 +46,7 @@ make -f docker.Makefile
 
 ### Run the Docker image
 
+
 Find the ID of the new docker image with:
 
 ```bash
@@ -57,6 +58,10 @@ Then run the docker image.
 ```bash
 ./run-docker.sh <image ID>
 ```
+
+NOTE: If the above fails with a message like "could not select device driver
+... [[gpu]]", then you may need to install your distribution's
+"nvidia-container-toolkit" package. For apt: `apt install nvidia-container-toolkit`
 
 Within the docker image, activate conda. (TODO: Avoid needing to do this explicitly)
 
