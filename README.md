@@ -85,7 +85,7 @@ TORCH_CUDA_ARCH_LIST="3.5 5.2 6.0 6.1 7.0+PTX 8.0" TORCH_NVCC_FLAGS="-Xfatbin -c
 ```bash
 cd /opt/multipy
 python multipy/runtime/example/generate_examples.py
-pip install -e . --install-option="--cudatests"
+BUILD_CUDA_TESTS=1 pip install -e .
 ```
 
 You can now run the MultiPy tests against your PyTorch build. For it to run
@@ -93,6 +93,7 @@ properly, you have to be in the `/opt/multipy` directory.
 
 ```bash
 ./multipy/runtime/build/test_deploy
+./multipy/runtime/build/test_deploy_gpu
 ```
 
 NOTE: If you ever rebase your PyTorch checkout or switch to another commit, you may
